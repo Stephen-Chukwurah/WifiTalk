@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stevity.wifitalk.R
 import com.stevity.wifitalk.models.Peer
 import com.stevity.wifitalk.util.GeneralUtil
+import kotlinx.android.synthetic.main.layout_chat_list.view.*
 
 class ChatListViewAdapter(private val chatList: List<Peer>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var itemClickListener: OnItemClickListener
@@ -28,7 +29,7 @@ class ChatListViewAdapter(private val chatList: List<Peer>) : RecyclerView.Adapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.feature_chat_general_chat_1_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_chat_list, parent, false)
 
         return PlaceViewHolder(itemView)
     }
@@ -47,7 +48,7 @@ class ChatListViewAdapter(private val chatList: List<Peer>) : RecyclerView.Adapt
 
             val id = GeneralUtil.getDrawableInt(context, chat.avatar)
             GeneralUtil.setImageToImageView(context, viewHolder.itemImageView, id)
-            GeneralUtil.setCircleImageToImageView(context, viewHolder.itemImageView, id, 0, 0)
+            GeneralUtil.setUrlCircleImageToImageView(context, viewHolder.itemImageView, chat.avatar, 0, 0)
 
             viewHolder.Time.text = chat.lastSeen
             val number = Integer.parseInt(chat.unreadMsgCount)

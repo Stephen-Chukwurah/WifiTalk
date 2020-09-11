@@ -27,6 +27,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.stevity.wifitalk.R
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -138,6 +139,19 @@ object GeneralUtil {
         return context?.resources!!.getIdentifier(name, defType, context.packageName)
     }
 
+    fun setUrlImageToImageView(context: Context, imageView: ImageView, url: String) {
+        val requestOptions = RequestOptions()
+            .centerCrop()
+            .placeholder(R.mipmap.ic_launcher_round)
+            .error(R.mipmap.ic_launcher_round)
+
+        Glide.with(context)
+            .load(url)
+            .apply(requestOptions)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(imageView)
+    }
+
     fun setImageToImageView(context: Context, imageView: ImageView, drawable: Int) {
         val requestOptions = RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
@@ -148,6 +162,53 @@ object GeneralUtil {
             .apply(requestOptions)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
+    }
+
+    fun setUrlCircleImageToImageView(context: Context?, imageView: ImageView, url: String, borderWidth: Int, color: Int) {
+        val requestOptions = RequestOptions()
+            .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
+            .skipMemoryCache(true)
+//            .placeholder(R.mipmap.ic_launcher_round)
+//            .error(R.mipmap.ic_launcher_round)
+            .circleCrop()
+
+        if (borderWidth > 0) {
+            Glide.with(context!!)
+                .load(url)
+                .apply(requestOptions)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(object : SimpleTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+
+                        imageView.setImageDrawable(resource)
+
+                        try {
+                            val colorContextCompat = ContextCompat.getColor(context, color)
+
+
+                            val bitmap = (resource as BitmapDrawable).bitmap
+
+                            if (bitmap != null) {
+
+                                val d = BitmapDrawable(context.resources, getCircularBitmapWithBorder(bitmap, borderWidth, colorContextCompat))
+
+                                imageView.setImageDrawable(d)
+                            } else {
+                                imageView.setImageDrawable(resource)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("TEAMPS", "onResourceReady: ", e)
+                        }
+
+                    }
+                })
+        } else {
+            Glide.with(context!!)
+                .load(url)
+                .apply(requestOptions)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView)
+        }
     }
 
     fun setCircleImageToImageView(context: Context?, imageView: ImageView, drawable: Int, borderWidth: Int, color: Int) {
