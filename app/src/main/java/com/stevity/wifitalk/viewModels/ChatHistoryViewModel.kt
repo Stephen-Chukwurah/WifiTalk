@@ -12,13 +12,11 @@ class ChatHistoryViewModel(application: Application) : AndroidViewModel(applicat
     private val peerRepository = PeerRepository.getInstance(application)
 
     // This LiveData is created using a ktx library shortcut
-    val employeeListLiveData: LiveData<List<Peer>> = peerRepository.getAllPeersLiveData()
-
     fun getPeerList(): LiveData<List<Peer>> {
-        return peerRepository.getAllPeersLiveData()
+        return peerRepository.findAll()
     }
 
     fun createPeer(peer: Peer) {
-        return peerRepository.insertPeer(peer)
+        peerRepository.save(peer)
     }
 }

@@ -6,15 +6,22 @@ import com.stevity.wifitalk.models.Peer
 
 @Dao
 interface PeerDAO {
+
+    @Insert
+    fun seedPeer(data: List<Peer>)
+
+    @Query("SELECT * FROM peers")
+    fun getAllPeers(): LiveData<List<Peer>>
+
+    @Query("SELECT * FROM peers WHERE id = :peerId")
+    fun getPeerById(peerId: Long): Peer
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPeer(peer: Peer)
+    fun createPeer(peer: Peer)
+
+    @Update
+    fun updatePeer(peer: Peer)
 
     @Delete
     fun deletePeer(peer: Peer)
-
-    @Query("SELECT * FROM peers")
-    fun getAllPeersLiveData(): LiveData<List<Peer>>
-
-    @Query("SELECT * FROM peers WHERE id = :peerId")
-    fun getPeerByIdLiveData(peerId: Int): LiveData<Peer?>
 }

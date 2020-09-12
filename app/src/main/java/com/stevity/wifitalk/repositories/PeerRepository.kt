@@ -5,28 +5,33 @@ import androidx.lifecycle.LiveData
 import com.stevity.wifitalk.daos.PeerDAO
 import com.stevity.wifitalk.models.Peer
 
-class PeerRepository private constructor(application: Application) {
-    private val peerDAO: PeerDAO = RoomDB.getDatabase(application).getPeerDao()
-    fun insertPeer(peer: Peer) {
-        peerDAO.insertPeer(peer)
+class PeerRepository private constructor(application: Application) : CrudRepository<Peer> {
+    private val peerDAO: PeerDAO = RoomDB.getDatabase(application).getPeerDao() // get singleton database object
+
+    override fun findAll(): LiveData<List<Peer>> {
+        return peerDAO.getAllPeers()
     }
 
-    fun deletePeer(peer: Peer) {
+    override fun findById(id: Long): Peer {
+        return peerDAO.getPeerById(id)
+    }
+
+    override fun save(peer: Peer) {
+        peerDAO.createPeer(peer)
+    }
+
+    override fun update(peer: Peer) {
+        peerDAO.updatePeer(peer)
+    }
+
+    override fun delete(peer: Peer) {
         peerDAO.deletePeer(peer)
     }
 
-    fun getAllPeersLiveData(): LiveData<List<Peer>> {
-        return peerDAO.getAllPeersLiveData();
-    }
 
     // Singleton Pattern for Repository.
     companion object {
-        /**
-         *  This is where the EmployeeRepository all callers will receive. Set it to null at first
-         *  and make it private so it can't be directly accessed.
-         */
         private var INSTANCE: PeerRepository? = null
-
         /**
          * This method checks whether or not INSTANCE is null. If it's not null, it returns the
          * Singleton INSTANCE. If it is null, it creates a new Object, sets INSTANCE equal to that,
